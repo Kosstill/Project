@@ -20,6 +20,8 @@ using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 
+using AutoMapper;
+
 using Project.Utilities;
 using Project.Models;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -40,10 +42,12 @@ namespace Project
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Integrate Simple Injector into app
             IntegrateSimpleInjector(services);  
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            // Configure DbContext and ASP.NET Identity
             services.AddDbContext<ApplicationDbContext>(opt => 
             {
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
@@ -55,7 +59,11 @@ namespace Project
 
             services.ConfigureApplicationCookie(options => options.LoginPath = "/forbidden");
 
-            services.AddAuthentication()
+            // Configure Google authentication
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
+            })
             .AddGoogle("Google", options =>
             {
                 options.ClientId = Configuration["Authentication:Google:ClientId"];
@@ -111,6 +119,18 @@ namespace Project
 
             // Allow Simple Injector to resolve services from ASP.NET Core.
             container.AutoCrossWireAspNetComponents(app);
+
+            // Configure services
+            container.Register(typeof(IRepository<>), typeof(Repository<>));
+
+            // Configure AutoMapper service
+            var mapperConfiguration = new MapperConfiguration(cng => 
+            {
+                cng.AddProfile(new MappingProfile());
+            });
+            container.Register<IMapper>(() => mapperConfiguration.CreateMapper(), Lifestyle.Singleton);
+
+            container.Verify();
         }
     }
 }

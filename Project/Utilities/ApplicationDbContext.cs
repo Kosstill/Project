@@ -6,7 +6,24 @@ namespace Project.Utilities
 
     public class ApplicationDbContext : IdentityDbContext<User>
     {
-        public ApplicationDbContext(DbContextOptions options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
+
+        public DbSet<Organization> Organizations { set; get; }
+        public DbSet<Country> Countries { set; get; }
+        public DbSet<Business> Businesses { set; get; }
+        public DbSet<Family> Families { set; get; }
+        public DbSet<Offering> Offerings { set; get; }
+        public DbSet<Department> Departments { set; get; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Organization>()
+                    .HasMany(o => o.Countries)
+                    .WithOne(c => c.Organization)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(builder);
+        }
     }
 }
