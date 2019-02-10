@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
 using Project.Utilities;
@@ -52,6 +53,24 @@ namespace Project.Controllers
 
             var mappedBusiness = _mapper.Map<Business, BusinessViewModel>(business);
             return mappedBusiness;
+        }
+
+        [HttpGet("{id}/families")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<FamilyViewModel>> GetFamilies(int id)
+        {
+            var business = this._businessRepository.GetItemById(
+                id,
+                sources => sources.Include(b => b.Families)
+            );
+
+            if ( business != null )
+            {
+                return Ok(_mapper.Map<IEnumerable<Family>, IEnumerable<FamilyViewModel>>(business.Families).ToList());
+            }
+
+            return NotFound();
         }
 
         [HttpPost]

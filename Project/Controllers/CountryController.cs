@@ -56,6 +56,24 @@ namespace Project.Controllers
             return mappedCountry;
         }
 
+        [HttpGet("{id}/businesses")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<BusinessViewModel>> GetBusinesses(int id)
+        {
+            var country = this._countryRepository.GetItemById(
+                id,
+                sources => sources.Include(c => c.Businesses)
+            );
+
+            if ( country != null )
+            {
+                return Ok(_mapper.Map<IEnumerable<Business>, IEnumerable<BusinessViewModel>>(country.Businesses).ToList());
+            }
+
+            return NotFound();
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

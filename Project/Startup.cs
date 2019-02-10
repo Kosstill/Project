@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
@@ -24,7 +26,7 @@ using AutoMapper;
 
 using Project.Utilities;
 using Project.Models;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Project.Middlewares;
 
 namespace Project
 {
@@ -106,8 +108,9 @@ namespace Project
 
             //app.UseHttpsRedirection();
 
+            app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
+            app.UseMiddleware(typeof(LoggingMiddleware), Path.Combine(Directory.GetCurrentDirectory(), "logging.txt"));
             app.UseAuthentication();
-
             app.UseMvc();
         }
 

@@ -43,13 +43,31 @@ namespace Project.Controllers
         {
             var organization = this._organizationRepository.GetItemById(id);
 
-            if (organization == null)
+            if ( organization == null )
             {
                 return NotFound();
             }
 
             var mappedOrganization = this._mapper.Map<Organization, OrganizationDetailsViewModel>(organization);
             return mappedOrganization;
+        }
+
+        [HttpGet("{id}/countries")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<CountryViewModel>> GetCountries(int id)
+        {
+            var organization = this._organizationRepository.GetItemById(
+                id,
+                sources => sources.Include(o => o.Countries)
+            );
+
+            if (organization != null)
+            {
+                return Ok(_mapper.Map<IEnumerable<Country>, IEnumerable<CountryViewModel>>(organization.Countries).ToList());
+            }
+
+            return NotFound();
         }
 
         [HttpPost]

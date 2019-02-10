@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+
 using Project.Utilities;
 using Project.Models;
 
@@ -53,6 +55,24 @@ namespace Project.Controllers
 
             var mappedFamily = _mapper.Map<Family, FamilyViewModel>(family);
             return mappedFamily;
+        }
+
+        [HttpGet("{id}/offerings")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<OfferingViewModel>> GetOfferings(int id)
+        {
+            var family = this._familyRepository.GetItemById(
+                id,
+                sources => sources.Include(f => f.Offerings)
+            );
+
+            if ( family != null )
+            {
+                return Ok(_mapper.Map<IEnumerable<Offering>, IEnumerable<OfferingViewModel>>(family.Offerings).ToList());
+            }
+
+            return NotFound();
         }
 
         [HttpPost]

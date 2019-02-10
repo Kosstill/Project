@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+
 using Project.Utilities;
 using Project.Models;
 
@@ -53,6 +55,24 @@ namespace Project.Controllers
 
             var mappedOffering = _mapper.Map<Offering, OfferingViewModel>(offering);
             return mappedOffering;
+        }
+
+        [HttpGet("{id}/departments")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<IEnumerable<DepartmentViewModel>> GetDepartments(int id)
+        {
+            var offering = this._offeringRepository.GetItemById(
+                id,
+                sources => sources.Include(o => o.Departments)
+            );
+
+            if ( offering != null )
+            {
+                return Ok(_mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(offering.Departments).ToList());
+            }
+
+            return NotFound();
         }
 
         [HttpPost]
