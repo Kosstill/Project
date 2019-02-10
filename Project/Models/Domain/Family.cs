@@ -12,8 +12,8 @@ namespace Project.Models
         [Required]
         public int BusinessId { set; get; }
         [ForeignKey(nameof(BusinessId))]
-        public virtual Business Business { set; get; }
+        public Business Business { set; get; }
 
-        public virtual ICollection<Offering> Offerings { set; get; }
+        public ICollection<Offering> Offerings { set; get; }
     }
 }

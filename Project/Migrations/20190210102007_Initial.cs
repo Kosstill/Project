@@ -180,7 +180,7 @@ namespace Project.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
                     Code = table.Column<long>(nullable: false),
-                    OrganizationId = table.Column<int>(nullable: true)
+                    OrganizationId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

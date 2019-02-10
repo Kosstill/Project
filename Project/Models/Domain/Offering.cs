@@ -14,6 +14,6 @@ namespace Project.Models
         [ForeignKey(nameof(FamilyId))]
         public Family Family { set; get; }
 
-        public virtual ICollection<Department> Departments { set; get; }
+        public ICollection<Department> Departments { set; get; }
     }
 }

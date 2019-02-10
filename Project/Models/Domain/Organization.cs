@@ -16,6 +16,6 @@ namespace Project.Models
         [Required]
         public string Owner { set; get; }
 
-        public virtual ICollection<Country> Countries { set; get; }
+        public ICollection<Country> Countries { set; get; }
     }
 }

@@ -11,6 +11,6 @@ namespace Project.Models
         [Required]
         public int OfferingId { set; get; }
         [ForeignKey(nameof(OfferingId))]
-        public virtual Offering Offering { set; get; }
+        public Offering Offering { set; get; }
     }
 }

@@ -17,20 +17,18 @@ namespace Project.Controllers
     public class OrganizationController : ControllerBase
     {
         private readonly IRepository<Organization> _organizationRepository = null;
-        private readonly IRepository<Country> _countryRepository = null;
         private readonly IMapper _mapper = null;
 
         public OrganizationController(
             IRepository<Organization> organizationRepository,
-            IRepository<Country> countryRepository,
             IMapper mapper)
         {
             this._organizationRepository = organizationRepository;
-            this._countryRepository = countryRepository;
             this._mapper = mapper;
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<OrganizationViewModel>> Get()
         {
             var items = this._organizationRepository.GetAllItems(null);
@@ -43,7 +41,7 @@ namespace Project.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<OrganizationDetailsViewModel> GetById(int id)
         {
-            var organization = this._organizationRepository.GetItemById(id, null);
+            var organization = this._organizationRepository.GetItemById(id);
 
             if (organization == null)
             {
@@ -51,27 +49,20 @@ namespace Project.Controllers
             }
 
             var mappedOrganization = this._mapper.Map<Organization, OrganizationDetailsViewModel>(organization);
-
             return mappedOrganization;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<OrganizationDetailsViewModel> Create(OrganizationDetailsViewModel model, [FromQuery]int[] countriesId)
+        public ActionResult<OrganizationDetailsViewModel> Create(OrganizationDetailsViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var organization = this._mapper.Map<OrganizationDetailsViewModel, Organization>(model);
 
-                if (countriesId.Length != 0)
-                {
-                    var countries = this._countryRepository.GetAllItems(null).Where(c => countriesId.Contains(c.Id));
-                    if (countries != null)
-                        organization.Countries = countries.ToList();
-                }
-
                 this._organizationRepository.Create(organization);
+                var mappedOrganization = _mapper.Map<Organization, OrganizationDetailsViewModel>(organization);
                 return CreatedAtAction(nameof(GetById), new { id = organization.Id }, organization);
             }
 
@@ -79,26 +70,14 @@ namespace Project.Controllers
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<OrganizationDetailsViewModel> Update(
-            OrganizationDetailsViewModel model, 
-            int id,
-            [FromQuery]int[] countriesId)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<OrganizationDetailsViewModel> Update(OrganizationDetailsViewModel model, int id)
         {
             if (ModelState.IsValid && model.Id == id)
             {
-                var updatedOrganization = this._organizationRepository.GetItemById(model.Id, (sources) => sources.Include(o => o.Countries));
+                var updatedOrganization = this._organizationRepository.GetItemById(model.Id, null);
                 this._mapper.Map(model, updatedOrganization);
-                
-                if (countriesId.Length != 0)
-                {
-                    var countries = this._countryRepository.GetAllItems(null).Where(c => countriesId.Contains(c.Id));
-                    if (countries != null)
-                    {
-                        updatedOrganization.Countries = countries.ToList();
-                    }
-                }
 
                 this._organizationRepository.Update(updatedOrganization);
                 var mapUpdatedOrganization = this._mapper.Map<Organization, OrganizationDetailsViewModel>(updatedOrganization);
@@ -113,12 +92,12 @@ namespace Project.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<OrganizationDetailsViewModel> Delete(int id)
         {
-            var item = this._organizationRepository.GetItemById(id, null);
+            var organization = this._organizationRepository.GetItemById(id, null);
 
-            if (item != null)
+            if (organization != null)
             {
-                this._organizationRepository.Delete(item);
-                var mappedItem = this._mapper.Map<Organization, OrganizationDetailsViewModel>(item);
+                this._organizationRepository.Delete(organization);
+                var mappedItem = this._mapper.Map<Organization, OrganizationDetailsViewModel>(organization);
 
                 return Ok(mappedItem);
             }

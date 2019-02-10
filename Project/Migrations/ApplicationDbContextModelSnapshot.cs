@@ -158,7 +158,7 @@ namespace Project.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int?>("OrganizationId");
+                    b.Property<int>("OrganizationId");
 
                     b.HasKey("Id");
 

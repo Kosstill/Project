@@ -12,8 +12,8 @@ namespace Project.Models
         [Required]
         public int CountryId { set; get; }
         [ForeignKey(nameof(CountryId))]
-        public virtual Country Country { set; get; }
+        public Country Country { set; get; }
 
-        public virtual ICollection<Family> Families { set; get; }
+        public ICollection<Family> Families { set; get; }
     }
 }

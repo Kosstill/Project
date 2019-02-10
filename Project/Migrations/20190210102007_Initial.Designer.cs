@@ -10,7 +10,7 @@ using Project.Utilities;
 namespace Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190208201627_Initial")]
+    [Migration("20190210102007_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -160,7 +160,7 @@ namespace Project.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int?>("OrganizationId");
+                    b.Property<int>("OrganizationId");
 
                     b.HasKey("Id");
 

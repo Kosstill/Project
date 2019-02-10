@@ -11,10 +11,11 @@ namespace Project.Models
         [Required]
         public long Code { set; get; }
 
-        public int? OrganizationId { set; get; }
+        [Required]
+        public int OrganizationId { set; get; }
         [ForeignKey(nameof(OrganizationId))]
-        public virtual Organization Organization { set; get; }
+        public Organization Organization { set; get; }
 
-        public virtual ICollection<Business> Businesses { set; get; }
+        public ICollection<Business> Businesses { set; get; }
     }
 }
