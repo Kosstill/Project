@@ -16,6 +16,7 @@ namespace Project.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AccountController : ControllerBase
     {
         private readonly SignInManager<User> _signInManager;

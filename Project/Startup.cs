@@ -18,15 +18,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 
+using AutoMapper;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using SimpleInjector.Integration.AspNetCore.Mvc;
-
-using AutoMapper;
+using Swashbuckle.AspNetCore.Swagger;
 
 using Project.Utilities;
 using Project.Models;
 using Project.Middlewares;
+using System.Reflection;
 
 namespace Project
 {
@@ -71,6 +72,13 @@ namespace Project
                 options.ClientId = Configuration["Authentication:Google:ClientId"];
                 options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });
+
+            // Register the Swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "APIs", Version = "v1" });
+            });
+
         }
 
         private void IntegrateSimpleInjector(IServiceCollection services)
@@ -103,14 +111,24 @@ namespace Project
                 app.UseHsts();
             }
 
+            // Enable middlewares for Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIs V1");
+            });
+
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
             //app.UseHttpsRedirection();
 
+            // Enable exception handling, logging and authentication middlewares
             app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
             app.UseMiddleware(typeof(LoggingMiddleware), Path.Combine(Directory.GetCurrentDirectory(), "logging.txt"));
             app.UseAuthentication();
+
             app.UseMvc();
         }
 
