@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+
 using Project.Models;
 using Project.Utilities;
 using AutoMapper;
@@ -14,6 +16,7 @@ namespace Project.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class CountryController : ControllerBase
     {
         private readonly IRepository<Country> _countryRepository;
@@ -30,6 +33,7 @@ namespace Project.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<CountryViewModel>> Get()
@@ -40,6 +44,7 @@ namespace Project.Controllers
             return mappedCountries.ToList();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -56,6 +61,7 @@ namespace Project.Controllers
             return mappedCountry;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/businesses")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -14,9 +14,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Project.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class AccountController : ControllerBase
     {
         private readonly SignInManager<User> _signInManager;
@@ -66,6 +66,7 @@ namespace Project.Controllers
             return Request.IsHttps ? Redirect("https://localhost:5001") : Redirect("http://localhost:5000");
         }
 
+        [HttpGet]
         [Authorize]
         [Route("logout")]
         public async Task<IActionResult> Logout()
@@ -74,6 +75,7 @@ namespace Project.Controllers
             return Request.IsHttps ? Redirect("https://localhost:5001") : Redirect("http://localhost:5000");
         }
 
+        [HttpGet]
         [Route("/forbidden")]
         public async void Forbidden(string ReturnUrl)
         {

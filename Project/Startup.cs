@@ -63,12 +63,13 @@ namespace Project
             services.ConfigureApplicationCookie(options => options.LoginPath = "/forbidden");
 
             // Configure Google authentication
-            services.AddAuthentication(opt =>
+            services.AddAuthentication(options =>
             {
-                opt.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
             })
             .AddGoogle("Google", options =>
             {
+                options.CallbackPath = new PathString("/google-callback");
                 options.ClientId = Configuration["Authentication:Google:ClientId"];
                 options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
             });

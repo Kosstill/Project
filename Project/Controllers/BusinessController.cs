@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 
 using Project.Utilities;
@@ -13,6 +14,7 @@ namespace Project.Controllers
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
+    [Authorize]
     public class BusinessController : ControllerBase
     {
         private readonly IRepository<Business> _businessRepository;
@@ -29,6 +31,7 @@ namespace Project.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<BusinessViewModel>> Get()
@@ -39,6 +42,7 @@ namespace Project.Controllers
             return mappedBusinesses.ToList();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,6 +59,7 @@ namespace Project.Controllers
             return mappedBusiness;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/families")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

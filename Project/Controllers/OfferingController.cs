@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 
 using Project.Utilities;
@@ -12,6 +13,7 @@ using Project.Models;
 
 namespace Project.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     [ApiController]
@@ -31,6 +33,7 @@ namespace Project.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<OfferingViewModel>> Get()
@@ -41,6 +44,7 @@ namespace Project.Controllers
             return mappedOfferings.ToList();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -57,6 +61,7 @@ namespace Project.Controllers
             return mappedOffering;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/departments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

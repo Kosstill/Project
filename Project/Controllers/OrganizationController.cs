@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 
 using Project.Models;
@@ -11,6 +12,7 @@ using Project.Utilities;
 
 namespace Project.Controllers
 {
+    [Authorize]
     [ApiController]
     [Produces("application/json")]
     [Route("api/[controller]")]
@@ -28,6 +30,7 @@ namespace Project.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<IEnumerable<OrganizationViewModel>> Get()
         {
@@ -36,6 +39,7 @@ namespace Project.Controllers
             return mappedItems;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -52,6 +56,7 @@ namespace Project.Controllers
             return mappedOrganization;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/countries")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
